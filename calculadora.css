@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ffd6eb, #ffe6f2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.calculadora {
+  background: #fff0f7;
+  padding: 25px;
+  border-radius: 24px;
+  width: 360px;
+  /* sombra y borde fucsia suave */
+  box-shadow: 0 0 15px 5px rgba(255, 20, 147, 0.2);
+  border: 2px solid #ff80bf;
+}
+
+#pantalla, #historial {
+  width: 100%;
+  height: 45px;
+  padding: 10px;
+  font-size: 1.3rem;
+  text-align: right;
+  border: 2px solid #ff80bf; /* borde fucsia suave */
+  background: #fff;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  /* sombra interior fucsia suave */
+  box-shadow: inset 0 0 8px rgba(255, 20, 147, 0.15);
+}
+
+#historial {
+  font-size: 1rem;
+  color: #aa3377;
+  background: #ffeaf3;
+}
+
+.botones {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background: #fcb4d5;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  /* sombra y borde fucsia suave */
+  box-shadow: 0 4px 8px rgba(255, 105, 180, 0.15);
+  border: 1.5px solid rgba(255, 20, 147, 0.25);
+}
+
+button:hover {
+  background: #f97db4;
+  box-shadow: 0 0 12px rgba(255, 20, 147, 0.3);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.operador {
+  background: #ff5ca8;
+  color: white;
+  border: 1.5px solid rgba(255, 20, 147, 0.35);
+}
+
+.operador:hover {
+  background: #e60073;
+}
+
+.igual {
+  background: #d1007f;
+  color: white;
+  grid-column: span 2;
+  border: 1.5px solid rgba(255, 20, 147, 0.4);
+}
+
+.igual:hover {
+  background: #a60066;
+}
+
+.grande {
+  grid-column: span 2;
+}

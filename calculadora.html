@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="calculadora.css">
+    <link rel="icon" href="icono.png" type="image/png">
+</head>
+<body>
+<div class="calculadora">
+<div id="historial"></div>
+<input type="text" id="pantalla" readonly>
+
+    <div class="botones">
+        <button onclick="borrarTodo()">C</button>
+        <button onclick="borrarUno()">←</button>
+        <button onclick="agregar('%')">%</button>
+        <button onclick="cambiarSigno()">±</button>
+        <button onclick="agregarOperador('/')">÷</button>
+
+        <button onclick="agregar('7')">7</button>
+        <button onclick="agregar('8')">8</button>
+        <button onclick="agregar('9')">9</button>
+        <button onclick="agregarOperador('*')">×</button>
+        <button onclick="agregarParentesis('(')">(</button>
+
+        <button onclick="agregar('4')">4</button>
+        <button onclick="agregar('5')">5</button>
+        <button onclick="agregar('6')">6</button>
+        <button onclick="agregarOperador('-')">−</button>
+        <button onclick="agregarParentesis(')')">)</button>
+
+        <button onclick="agregar('1')">1</button>
+        <button onclick="agregar('2')">2</button>
+        <button onclick="agregar('3')">3</button>
+        <button onclick="agregarOperador('+')">+</button>
+        <button class="igual" onclick="calcular()">=</button>
+
+        <button class="grande" onclick="agregar('0')">0</button>
+        <button onclick="agregarPunto()">.</button>
+    </div>
+    </div>
+
+    <script>
+        const historial = document.getElementById("historial");
+        const pantalla = document.getElementById("pantalla");
+    const operadores = ['+', '-', '*', '/', '%'];
+
+    function limpiarSiError() {
+      if (pantalla.value === "Error") pantalla.value = "";
+    }
+  
+    function agregar(valor) {
+      limpiarSiError();
+      const ult = pantalla.value.slice(-1);
+  
+      // Evitar operadores repetidos
+      if (operadores.includes(ult) && operadores.includes(valor)) {
+        pantalla.value = pantalla.value.slice(0, -1) + valor;
+        return;
+      }
+  
+      pantalla.value += valor;
+    }
+  
+    function agregarOperador(op) {
+      limpiarSiError();
+      const val = pantalla.value;
+  
+      if (val === "") {
+        if (op === "-") pantalla.value = "-"; // Permite iniciar con negativo
+        return;
+      }
+  
+      const ult = val.slice(-1);
+      if (operadores.includes(ult)) {
+        pantalla.value = val.slice(0, -1) + op;
+      } else {
+        pantalla.value += op;
+      }
+    }
+  
+    function agregarPunto() {
+      limpiarSiError();
+      const val = pantalla.value;
+      if (val === "" || operadores.includes(val.slice(-1)) || val.slice(-1) === '(') {
+        pantalla.value += "0.";
+        return;
+      }
+      const partes = val.split(/[\+\-\*\/\%\(\)]/);
+      const ultimaParte = partes[partes.length - 1];
+      if (ultimaParte.includes(".")) return;
+      pantalla.value += ".";
+    }
+  
+    function cambiarSigno() {
+      limpiarSiError();
+      let v = pantalla.value;
+      if (v === "") return;
+  
+      try {
+        let num = eval(v);
+        pantalla.value = -num;
+      } catch {
+        pantalla.value = "Error";
+      }
+    }
+  
+    function borrarTodo() {
+      pantalla.value = "";
+      historial.textContent = "";
+    }
+  
+    function borrarUno() {
+      limpiarSiError();
+      pantalla.value = pantalla.value.slice(0, -1);
+    }
+  
+    function agregarParentesis(par) {
+      limpiarSiError();
+      const val = pantalla.value;
+      const ult = val.slice(-1);
+  
+      if (par === '(') {
+        if (val === "" || operadores.includes(ult) || ult === '(') {
+          pantalla.value += "(";
+        }
+      } else if (par === ')') {
+        const abiertos = (val.match(/\(/g) || []).length;
+        const cerrados = (val.match(/\)/g) || []).length;
+  
+        if (abiertos > cerrados && /[0-9)]$/.test(val)) {
+          pantalla.value += ")";
+        }
+      }
+    }
+  
+    function calcular() {
+      let expr = pantalla.value.trim();
+      if (!expr) return;
+  
+      const abiertos = (expr.match(/\(/g) || []).length;
+      const cerrados = (expr.match(/\)/g) || []).length;
+      expr += ')'.repeat(abiertos - cerrados);
+  
+      try {
+        const resultado = Function('"use strict"; return (' + expr + ')')();
+        if (isNaN(resultado) || resultado === Infinity || resultado === -Infinity) {
+          pantalla.value = "Error";
+        } else {
+          historial.textContent = expr + " =";
+          pantalla.value = resultado;
+        }
+      } catch {
+        pantalla.value = "Error";
+      }
+    }
+  
+    // Soporte de teclado físico
+    document.addEventListener("keydown", e => {
+      const k = e.key;
+      if (pantalla.value === "Error") pantalla.value = "";
+  
+      if (!isNaN(k)) agregar(k);
+      else if (['+','-','*','/','%'].includes(k)) agregarOperador(k);
+      else if (k === 'Enter') { e.preventDefault(); calcular(); }
+      else if (k === 'Backspace') borrarUno();
+      else if (k === 'Delete') borrarTodo();
+      else if (k === '.') agregarPunto();
+      else if (k === '(' || k === ')') agregarParentesis(k);
+    });
+  </script>
+  
+  
+</body>
+</html>
